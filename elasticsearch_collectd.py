@@ -72,6 +72,10 @@ STATS_ES1 = {
     ## SEGMENTS
     'indices.segments.count': Stat("gauge", "nodes.%s.indices.segments.count"),
     'indices.segments.size': Stat("bytes", "nodes.%s.indices.segments.memory_in_bytes"),
+
+    ## TRANSLOG
+    'indices.translog.operations': Stat("gauge", "nodes.%s.indices.translog.operations"),
+    'indices.translog.size': Stat("bytes", "nodes.%s.indices.translog.size_in_bytes"),
 }
 
 # DICT: ElasticSearch 0.9.x
