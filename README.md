@@ -1,4 +1,4 @@
-elasticsearch-collectd-plugin
+## elasticsearch-collectd-plugin
 =====================
 
 A [ElasticSearch](http://elasticsearch.org) plugin for [collectd](http://collectd.org) using collectd's [Python plugin](http://collectd.org/documentation/manpages/collectd-python.5.shtml).
@@ -36,14 +36,23 @@ ES Index Stats :
  * refresh Refresh statistics.
  * suggest Suggest statistics.
 
-Install
--------
+ES Cluster Health :
+ * Number of nodes
+ * Number of data nodes
+ * Active primary shards
+ * Active shards
+ * Relocating shards
+ * Initializing shards
+ * Unassigned shards
+ * Number of pending tasks
+
+### Install
  1. Place elasticsearch_collectd.py in /opt/collectd/lib/collectd/plugins/python (assuming you have collectd installed to /opt/collectd).
  2. Configure the plugin (see below).
  3. Restart collectd.
 
-Configuration
--------------
+### Configuration
+
  * _Verbose_             boolean (default: false) -  enable verbose logging from the plugin.
  * _Host_                string (default: "localhost") - the hostname of the elasticsearch server to query for metrics.
  * _Port_                integer (default: 9200) - the elasticsearch port number.
@@ -51,9 +60,23 @@ Configuration
  * _Indexes_             array  (default: [ ]) - A comma seperated list of strings.  The string contains the index to collect statistics from.
  * _EnableIndexStats_    boolean (default:false) - enable statistics for indexes in the cluster.
  * _EnableNodeStats_     boolean (default:true) - enable statistics for the nodes in the cluster.
+ * _EnableClusterHealth_ boolean (default:false) - enable the collection of cluster health information.
  * See elasticsearch.conf as an example of the syntax.
 
-Requirements
-------------
+#### Beware:
+_Node statistics are collected per node and require the plugin to fetch metrics from each node.  Cluster and Indices statistics are cluster wide
+and can be fetched from any given node.  They should only be fetched once per polling interval._
+
+### Requirements
  * collectd 4.9+
  * Elasticsearch 0.9.x or 1.X
+
+### Tests
+  The plugin has been tested against the following Elasticsearch versions
+ * 0.90.13
+ * 1.0.3
+ * 1.1.2
+ * 1.2.4
+ * 1.3.8
+ * 1.4.4
+ * 1.5.0

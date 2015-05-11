@@ -22,18 +22,19 @@ import collections
 from distutils.version import StrictVersion
 
 
-ES_CLUSTER = "elasticsearch"
-ES_HOST = "localhost"
-ES_PORT = 9200
+ES_CLUSTER           = "elasticsearch"
+ES_HOST              = "localhost"
+ES_PORT              = 9200
 
-# ES indexes must be fully qualified. E.g. _all, index1,index2
-# To do:  Handle glob sytanx for index names.
-ES_INDEX = [ ]
+# ES indexes must be fully qualified. E.g. _all, index1, index2
+# To do:  Handle glob syntax for index names.
+ES_INDEX             = [ ]
 
-ENABLE_INDEX_STATS = False
-ENABLE_NODE_STATS = True
+ENABLE_INDEX_STATS   = False
+ENABLE_NODE_STATS    = True
+ENABLE_CLUSTER_STATS = False
 
-VERBOSE_LOGGING = False
+VERBOSE_LOGGING      = False
 
 Stat = collections.namedtuple('Stat', ('type', 'path'))
 
@@ -41,7 +42,7 @@ Stat = collections.namedtuple('Stat', ('type', 'path'))
 # in the cluster or from an external probe server.
 INDEX_STATS = {
 
-    # === ElasticSearch 0.90.x and higher ===
+    # === Elasticsearch 0.90.x and higher ===
     "v('{es_version}') >= v('0.90.0')": {
 
         ## PRIMARIES
@@ -73,52 +74,6 @@ INDEX_STATS = {
         "indices.{index_name}.primaries.search.fetch_total" : Stat("counter", "indices.%s.primaries.search.fetch_total"),
         "indices.{index_name}.primaries.search.fetch_time_in_millis" : Stat("counter", "indices.%s.primaries.search.fetch_time_in_millis"),
         "indices.{index_name}.primaries.search.fetch_current" : Stat("gauge", "indices.%s.primaries.search.fetch_current"),
-        # MERGES
-        "indices.{index_name}.primaries.merges.current" : Stat("gauge", "indices.%s.primaries.merges.current"),
-        "indices.{index_name}.primaries.merges.current_docs" : Stat("gauge", "indices.%s.primaries.merges.current_docs"),
-        "indices.{index_name}.primaries.merges.current_size_in_bytes" : Stat("bytes", "indices.%s.primaries.merges.current_size_in_bytes"),
-        "indices.{index_name}.primaries.merges.total" : Stat("counter", "indices.%s.primaries.merges.total"),
-        "indices.{index_name}.primaries.merges.total_time_in_millis" : Stat("counter", "indices.%s.primaries.merges.total_time_in_millis"),
-        "indices.{index_name}.primaries.merges.total_docs" : Stat("counter", "indices.%s.primaries.merges.total_docs"),
-        "indices.{index_name}.primaries.merges.total_size_in_bytes" : Stat("bytes", "indices.%s.primaries.merges.total_size_in_bytes"),
-        # REFRESH
-        "indices.{index_name}.primaries.refresh.total" : Stat("counter", "indices.%s.primaries.refresh.total"),
-        "indices.{index_name}.primaries.refresh.total_time_in_millis" : Stat("counter", "indices.%s.primaries.refresh.total_time_in_millis"),
-        # FLUSH
-        "indices.{index_name}.primaries.flush.total" : Stat("counter", "indices.%s.primaries.flush.total"),
-        "indices.{index_name}.primaries.flush.total_time_in_millis" : Stat("counter", "indices.%s.primaries.flush.total_time_in_millis"),
-        # WARMER
-        "indices.{index_name}.primaries.warmer.current" : Stat("gauge", "indices.%s.primaries.warmer.current"),
-        "indices.{index_name}.primaries.warmer.total" : Stat("counter", "indices.%s.primaries.warmer.total"),
-        "indices.{index_name}.primaries.warmer.total_time_in_millis" : Stat("counter", "indices.%s.primaries.warmer.total_time_in_millis"),
-        # FILTER_CACHE
-        "indices.{index_name}.primaries.filter_cache.memory_size_in_bytes" : Stat("bytes", "indices.%s.primaries.filter_cache.memory_size_in_bytes"),
-        "indices.{index_name}.primaries.filter_cache.evictions" : Stat("counter", "indices.%s.primaries.filter_cache.evictions"),
-        # ID_CACHE
-        "indices.{index_name}.primaries.id_cache.memory_size_in_bytes" : Stat("bytes", "indices.%s.primaries.id_cache.memory_size_in_bytes"),
-        # FIELDDATA
-        "indices.{index_name}.primaries.fielddata.memory_size_in_bytes" : Stat("bytes", "indices.%s.primaries.fielddata.memory_size_in_bytes"),
-        "indices.{index_name}.primaries.fielddata.evictions" : Stat("counter", "indices.%s.primaries.fielddata.evictions"),
-        # PERCOLATE
-        "indices.{index_name}.primaries.percolate.total" : Stat("counter", "indices.%s.primaries.percolate.total"),
-        "indices.{index_name}.primaries.percolate.time_in_millis" : Stat("counter", "indices.%s.primaries.percolate.time_in_millis"),
-        "indices.{index_name}.primaries.percolate.current" : Stat("gauge", "indices.%s.primaries.percolate.current"),
-        "indices.{index_name}.primaries.percolate.memory_size_in_bytes" : Stat("bytes", "indices.%s.primaries.percolate.memory_size_in_bytes"),
-        "indices.{index_name}.primaries.percolate.queries" : Stat("counter", "indices.%s.primaries.percolate.queries"),
-        # COMPELTION
-        "indices.{index_name}.primaries.completion.size_in_bytes" : Stat("bytes", "indices.%s.primaries.completion.size_in_bytes"),
-        # SEGMENTS
-        "indices.{index_name}.primaries.segments.count" : Stat("counter", "indices.%s.primaries.segments.count"),
-        "indices.{index_name}.primaries.segments.memory_in_bytes" : Stat("bytes", "indices.%s.primaries.segments.memory_in_bytes"),
-        "indices.{index_name}.primaries.segments.index_writer_memory_in_bytes" : Stat("bytes", "indices.%s.primaries.segments.index_writer_memory_in_bytes"),
-        "indices.{index_name}.primaries.segments.version_map_memory_in_bytes" : Stat("bytes", "indices.%s.primaries.segments.version_map_memory_in_bytes"),
-        # TRANSLOG
-        "indices.{index_name}.primaries.translog.operations" : Stat("counter", "indices.%s.primaries.translog.operations"),
-        "indices.{index_name}.primaries.translog.size_in_bytes" : Stat("bytes", "indices.%s.primaries.translog.size_in_bytes"),
-        # SUGGEST
-        "indices.{index_name}.primaries.suggest.total" : Stat("counter", "indices.%s.primaries.suggest.total"),
-        "indices.{index_name}.primaries.suggest.time_in_millis" : Stat("counter", "indices.%s.primaries.suggest.time_in_millis"),
-        "indices.{index_name}.primaries.suggest.current" : Stat("gauge", "indices.%s.primaries.suggest.current"),
 
         ## TOTAL ##
         # DOCS
@@ -148,12 +103,68 @@ INDEX_STATS = {
         "indices.{index_name}.total.search.query_time_in_millis" : Stat("counter", "indices.%s.total.search.query_time_in_millis"),
         "indices.{index_name}.total.search.query_current" : Stat("gauge", "indices.%s.total.search.query_current"),
         "indices.{index_name}.total.search.fetch_total" : Stat("counter", "indices.%s.total.search.fetch_total"),
+    },
+    # === Elasticsearch 1.0.0 and higher ===
+    "v('{es_version}') >= v('1.0.0')": {
+        # TRANSLOG
+        "indices.{index_name}.primaries.translog.size_in_bytes" : Stat("bytes", "indices.%s.primaries.translog.size_in_bytes"),
+        "indices.{index_name}.primaries.translog.operations" : Stat("counter", "indices.%s.primaries.translog.operations"),
+        # SEGMENTS
+        "indices.{index_name}.primaries.segments.memory_in_bytes" : Stat("bytes", "indices.%s.primaries.segments.memory_in_bytes"),
+        "indices.{index_name}.primaries.segments.count" : Stat("counter", "indices.%s.primaries.segments.count"),
+        # ID_CACHE
+        "indices.{index_name}.primaries.id_cache.memory_size_in_bytes" : Stat("bytes", "indices.%s.primaries.id_cache.memory_size_in_bytes"),
+        # FLUSH
+        "indices.{index_name}.primaries.flush.total" : Stat("counter", "indices.%s.primaries.flush.total"),
+        "indices.{index_name}.primaries.flush.total_time_in_millis" : Stat("counter", "indices.%s.primaries.flush.total_time_in_millis"),
+        # WARMER
+        "indices.{index_name}.primaries.warmer.total.primaries.warmer.total_time_in_millis" : Stat("counter", "indices.%s.primaries.warmer.total_time_in_millis"),
+        "indices.{index_name}.primaries.warmer.total" : Stat("counter", "indices.%s.primaries.warmer.total"),
+        "indices.{index_name}.primaries.warmer.current" : Stat("gauge", "indices.%s.primaries.warmer.current"),
+        # FIELDDATA
+        "indices.{index_name}.primaries.fielddata.memory_size_in_bytes" : Stat("bytes", "indices.%s.primaries.fielddata.memory_size_in_bytes"),
+        "indices.{index_name}.primaries.fielddata.evictions" : Stat("counter", "indices.%s.primaries.fielddata.evictions"),
+        # REFRESH
+        "indices.{index_name}.primaries.refresh.total_time_in_millis" : Stat("counter", "indices.%s.primaries.refresh.total_time_in_millis"),
+        "indices.{index_name}.primaries.refresh.total" : Stat("counter", "indices.%s.primaries.refresh.total"),
+        # MERGES
+        "indices.{index_name}.primaries.merges.total_docs" : Stat("counter", "indices.%s.primaries.merges.total_docs"),
+        "indices.{index_name}.primaries.merges.total_size_in_bytes" : Stat("bytes", "indices.%s.primaries.merges.total_size_in_bytes"),
+        "indices.{index_name}.primaries.merges.current" : Stat("gauge", "indices.%s.primaries.merges.current"),
+        "indices.{index_name}.primaries.merges.total" : Stat("counter", "indices.%s.primaries.merges.total"),
+        "indices.{index_name}.primaries.merges.current_docs" : Stat("gauge", "indices.%s.primaries.merges.current_docs"),
+        "indices.{index_name}.primaries.merges.total_time_in_millis" : Stat("counter", "indices.%s.primaries.merges.total_time_in_millis"),
+        "indices.{index_name}.primaries.merges.current_size_in_bytes" : Stat("bytes", "indices.%s.primaries.merges.current_size_in_bytes"),
+        # COMPELTION
+        "indices.{index_name}.primaries.completion.size_in_bytes" : Stat("bytes", "indices.%s.primaries.completion.size_in_bytes"),
+        # PERCOLATE
+        "indices.{index_name}.primaries.percolate.total" : Stat("counter", "indices.%s.primaries.percolate.total"),
+        "indices.{index_name}.primaries.percolate.memory_size_in_bytes" : Stat("bytes", "indices.%s.primaries.percolate.memory_size_in_bytes"),
+        "indices.{index_name}.primaries.percolate.queries" : Stat("counter", "indices.%s.primaries.percolate.queries"),
+        "indices.{index_name}.primaries.percolate.time_in_millis" : Stat("counter", "indices.%s.primaries.percolate.time_in_millis"),
+        "indices.{index_name}.primaries.percolate.current" : Stat("gauge", "indices.%s.primaries.percolate.current"),
+        # FILTER_CACHE
+        "indices.{index_name}.primaries.filter_cache.evictions" : Stat("counter", "indices.%s.primaries.filter_cache.evictions"),
+        "indices.{index_name}.primaries.filter_cache.memory_size_in_bytes" : Stat("bytes", "indices.%s.primaries.filter_cache.memory_size_in_bytes"),
+    },
+    # === Elasticsearch 1.1.0 and higher ===
+    "v('{es_version}') >= v('1.1.0')": {
+        ## SUGGEST
+        "indices.{index_name}.primaries.suggest.total" : Stat("counter", "indices.%s.primaries.suggest.total"),
+        "indices.{index_name}.primaries.suggest.time_in_millis" : Stat("counter", "indices.%s.primaries.suggest.time_in_millis"),
+        "indices.{index_name}.primaries.suggest.current" : Stat("gauge", "indices.%s.primaries.suggest.current"),
+    },
+    # === Elasticsearch 1.3.0 and higher ===
+    "v('{es_version}') >= v('1.3.0')": {
+        ## SEGMENTS
+        "indices.{index_name}.primaries.segments.index_writer_memory_in_bytes" : Stat("bytes", "indices.%s.primaries.segments.index_writer_memory_in_bytes"),
+        "indices.{index_name}.primaries.segments.version_map_memory_in_bytes" : Stat("bytes", "indices.%s.primaries.segments.version_map_memory_in_bytes"),
     }
 }
 
 NODE_STATS = {
 
-    # === ElasticSearch 0.90.x and higher ===
+    # === Elasticsearch 0.90.x and higher ===
     "v('{es_version}') >= v('0.90.0')": {
         ## DOCS
         'indices.docs.count': Stat("gauge", "nodes.%s.indices.docs.count"),
@@ -220,13 +231,13 @@ NODE_STATS = {
         'process.open_file_descriptors': Stat("gauge", "nodes.%s.process.open_file_descriptors"),
     },
 
-    # === ElasticSearch 0.90.x only ===
+    # === Elasticsearch 0.90.x only ===
     "v('0.90.0') <= v('{es_version}') < v('1.0.0')": {
         ##CPU
         'process.cpu.percent': Stat("gauge", "nodes.%s.process.cpu.percent")
     },
 
-    # === ElasticSearch 1.0.0 or greater ===
+    # === Elasticsearch 1.0.0 or greater ===
     "v('{es_version}') >= v('1.0.0')": {
         ## STORE
         'indices.store.throttle-time': Stat("counter", "nodes.%s.indices.store.throttle_time_in_millis"),
@@ -266,14 +277,26 @@ NODE_STATS = {
         'indices.translog.size': Stat("bytes", "nodes.%s.indices.translog.size_in_bytes"),
     },
 
-    # DICT: ElasticSearch 1.3.0 or greater
+    # DICT: Elasticsearch 1.3.0 or greater
     "v('{es_version}') >= v('1.3.0')": {
         'indices.segments.index-writer-memory': Stat("bytes", "nodes.%s.indices.segments.index_writer_memory_in_bytes"),
         'indices.segments.index-memory': Stat("bytes", "nodes.%s.indices.segments.memory_in_bytes"),
     }
 }
 
-STATS_CUR = {}
+CLUSTER_STATS = {
+    # === Elasticsearch 0.90.x and higher ===
+    "v('{es_version}') >= v('0.90.0')": {
+        'active_primary_shards': Stat("gauge", "cluster.%s.active_primary_shards"),
+        'active_shards': Stat("gauge", "cluster.%s.active_shards"),
+        'initializing_shards': Stat("gauge", "cluster.%s.initializing_shards"),
+        'number_of_data_nodes': Stat("gauge", "cluster.%s.number_of_data_nodes"),
+        'number_of_nodes': Stat("gauge", "cluster.%s.number_of_nodes"),
+        'relocating_shards': Stat("gauge", "cluster.%s.relocating_shards"),
+        'unassigned_shards': Stat("gauge", "cluster.%s.unassigned_shards"),
+    }
+}
+
 
 def check_es_version(rule, version):
     log_verbose('Elasticsearch version rule: %s' % (rule.format(es_version=version)) )
@@ -284,30 +307,37 @@ def check_es_version(rule, version):
 
 def generate_metric_set(rules, es_version):
     """
-    @breif - Given an initial set of metrics with the elasticsearch version and the
-    requested metrics to be fetched, parse all pre-defined metrics and
-    return a sythesised set of metrics which is compatiable with existing
-    functions.
+    @brief - Iterate over the first level keys in the "rules" dictionary
+    and evaluate the key as a Python statement.  When a key evaluates as true,
+    the value is merged into a dictionary containing the sythesised metrics.
 
-    @rules - a struction which contains a rule to be evaluated when evaluting
-    which metrics to be appended to the returned data set.
+    @rules - a dictionary containing keys which define a rule to be evaluated
+    with the elasticsearch version number.  The rule must be valid python and
+    return a True/False result.
 
-    @es_version - the Elasticsearch version.
+    @es_version - A string containing the Elasticsearch version which must be
+    compatiable with distutils.version's VersionStrict function.
+
+    @returns - A dictionary containing the metrics to be fetched that are available
+    for the Elasticsearch version.
     """
     synthesised_metrics = {}
 
     for k in rules.keys():
         if check_es_version(k, es_version):
-            log_verbose("Adding %s" % k)
+            log_verbose("Adding metrics for rule : %s" % k)
             synthesised_metrics.update(rules[k])
 
     return synthesised_metrics
 
 
-# FUNCTION: Collect stats from JSON result
-def lookup_node_stat(stat, metrics, json):
-    node = json['nodes'].keys()[0]
-    val = dig_it_up(json, metrics[stat].path % node)
+
+def lookup_stat(stat, json):
+    """
+    Collect stats from JSON result
+    """
+    log_verbose("lookup_node_stat: node=%s " % stat)
+    val = dig_it_up(json, stat)
 
     # Check to make sure we have a valid result
     # dig_it_up returns False if no match found
@@ -339,7 +369,7 @@ def log_verbose(msg):
 
 def configure_callback(conf):
     """Received configuration information"""
-    global ES_HOST, ES_PORT, VERBOSE_LOGGING, ES_CLUSTER, ES_INDEX, ENABLE_INDEX_STATS, ENABLE_NODE_STATS
+    global ES_HOST, ES_PORT, VERBOSE_LOGGING, ES_CLUSTER, ES_INDEX, ENABLE_INDEX_STATS, ENABLE_NODE_STATS, ENABLE_CLUSTER_STATS
     for node in conf.children:
         if node.key == 'Host':
             ES_HOST = node.values[0]
@@ -358,6 +388,9 @@ def configure_callback(conf):
         elif node.key == 'EnableNodeStats':
             ENABLE_NODE_STATS = bool(node.values[0])
             log_verbose("Enable Node Stats : %s" % ENABLE_NODE_STATS)
+        elif node.key == 'EnableClusterHealth':
+            ENABLE_CLUSTER_STATS = bool(node.values[0])
+            log_verbose("Enable Cluster Health : %s" % ENABLE_CLUSTER_STATS)
         else:
             collectd.warning('elasticsearch plugin: Ignoring unknown config key: %s.' % node.key)
 
@@ -376,11 +409,11 @@ def fetch_url(url):
 
 
 def fetch_stats():
-    global ES_CLUSTER, ES_HOST, ES_PORT, STATS_CUR, ES_INDEX, ENABLE_NODE_STATS, ENABLE_INDEX_STATS
+    global ES_CLUSTER, ES_HOST, ES_PORT, ES_INDEX, ENABLE_NODE_STATS, ENABLE_INDEX_STATS, ENABLE_CLUSTER_STATS
 
     NODE_STATS_URL = {
-        "v('{es_version}') >= v('0.90.0')": '{url}_cluster/nodes/_local/stats?http=true&process=true&jvm=true&transport=true',
-        "v('{es_version}') >= v('1.0.0')" : '{url}_nodes/_local/stats/transport,http,process,jvm,indices'
+        "v('0.90.0') <= v('{es_version}') < v('1.0.0')": '{url}_cluster/nodes/_local/stats?http=true&process=true&jvm=true&transport=true&thread_pool=true',
+        "v('{es_version}') >= v('1.0.0')" : '{url}_nodes/_local/stats/transport,http,process,jvm,indices,thread_pool'
     }
 
     node_stats_url = ""
@@ -399,56 +432,74 @@ def fetch_stats():
     # Node statistics
     if ENABLE_NODE_STATS:
         node_metrics = {}
-        for k in NODE_STATS_URL.keys():
-            if check_es_version(k, str(version)):
-                node_stats_url = NODE_STATS_URL[k].format(url=base_url)
-        log_verbose('Node url : %s' % node_stats_url)
+        for url_version_rule in NODE_STATS_URL.keys():
+            if check_es_version(url_version_rule, str(version)):
+                node_stats_url = NODE_STATS_URL[url_version_rule].format(url=base_url)
+                log_verbose('Node url : %s' % node_stats_url)
+                # Stop when the first rule is evaluated as true.
+                break
 
         node_metrics.update(generate_metric_set(NODE_STATS, version))
 
-# FIXME: Re-add the thread pool statistics.
-#        # add info on thread pools
-#        for pool in ['generic', 'index', 'get', 'snapshot', 'merge', 'optimize', 'bulk', 'warmer', 'flush', 'search', 'refresh']:
-#            for attr in ['threads', 'queue', 'active', 'largest']:
-#                path = 'thread_pool.{0}.{1}'.format(pool, attr)
-#                node_metrics[path] = Stat("gauge", 'nodes.%s.{0}'.format(path))
-#            for attr in ['completed', 'rejected']:
-#                path = 'thread_pool.{0}.{1}'.format(pool, attr)
-#                node_metrics[path] = Stat("counter", 'nodes.%s.{0}'.format(path))
+        # add info on thread pools
+        for pool in ['generic', 'index', 'get', 'snapshot', 'merge', 'optimize', 'bulk', 'warmer', 'flush', 'search', 'refresh']:
+            for attr in ['threads', 'queue', 'active', 'largest']:
+                path = 'thread_pool.{0}.{1}'.format(pool, attr)
+                node_metrics[path] = Stat("gauge", 'nodes.%s.{0}'.format(path))
+            for attr in ['completed', 'rejected']:
+                path = 'thread_pool.{0}.{1}'.format(pool, attr)
+                node_metrics[path] = Stat("counter", 'nodes.%s.{0}'.format(path))
 
-        node_json = fetch_url(node_stats_url)
-        parse_node_stats(node_metrics, node_json)
-    log_verbose('Node stats processed')
+        node_stats = fetch_url(node_stats_url)
+        parse_node_stats(node_metrics, node_stats)
 
     # Indexes statistics
     if ENABLE_INDEX_STATS:
         index_metrics = {}
-        log_verbose('Checking index.')
+
         for k in ES_INDEX:
             index_stats_url = base_url + k + "/_stats"
             index_metrics.update(generate_metric_set(INDEX_STATS, version))
-            log_verbose('Index statistics url : %s' % index_stats_url)
 
             index_json = fetch_url(index_stats_url)
             parse_index_stats(index_metrics, index_json, k)
+
+    # Cluster Stats
+    if ENABLE_CLUSTER_STATS:
+        cluster_metrics = {}
+        cluster_metrics.update(generate_metric_set(CLUSTER_STATS, version))
+
+        cluster_health = fetch_url(base_url+"_cluster/health")
+        parse_cluster_stats(cluster_metrics, cluster_health)
 
     return True
 
 
 
 def parse_node_stats(metrics, json):
-    """Parse stats response from ElasticSearch"""
+    """Parse stats response from Elasticsearch"""
+    node = json['nodes'].keys()[0]
     for name, key in metrics.iteritems():
-        result = lookup_node_stat(name, metrics, json)
+        result = lookup_stat( metrics[name].path % node, json)
         dispatch_stat(result, name, key)
     return True
 
 
 def parse_index_stats(metrics, json, index):
-    """Parse stats response from ElasticSearch"""
+    """Parse stats response from Elasticsearch"""
     for name, key in metrics.iteritems():
         result = lookup_index_stat(name, metrics, json)
         dispatch_stat(result, name.format(index_name=index), key)
+    return True
+
+
+def parse_cluster_stats(metrics, stats):
+    """Parse stats response from Elasticsearch"""
+    global ES_CLUSTER
+    for name, key in metrics.iteritems():
+        result = lookup_stat(name, stats)
+        # FIXME: This works but is messy.
+        dispatch_stat(result, str(key.path) % ES_CLUSTER, key )
     return True
 
 
@@ -498,5 +549,7 @@ def index_dig_it_up(obj, path, index_name):
 
 collectd.register_config(configure_callback)
 collectd.register_read(read_callback)
+
+
 
 
