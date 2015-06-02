@@ -14,7 +14,6 @@
 #limitations under the License.
 
 
-import collectd
 import json
 import urllib2
 import socket
@@ -545,11 +544,34 @@ def index_dig_it_up(obj, path, index_name):
     except:
         return False
 
+# The following classes are there to launch the plugin manually
+# with something like ./elasticsearch_collectd.py for development
+# purposes. They basically mock the calls on the "collectd" symbol
+# so everything prints to stdout.
+class CollectdMock(object):
+    def error(self, msg):
+        print 'ERROR: {}'.format(msg)
+        sys.exit(1)
 
+    def Values(self, plugin='elasticsearch'):
+        return CollectdValuesMock()
 
-collectd.register_config(configure_callback)
-collectd.register_read(read_callback)
+class CollectdValuesMock(object):
+    def dispatch(self):
+        print self
 
+    def __str__(self):
+        attrs = []
+        for name in dir(self):
+            if not name.startswith('_') and name is not 'dispatch':
+                attrs.append("{}={}".format(name, getattr(self, name)))
+        return "<CollectdValues {}>".format(' '.join(attrs))
 
-
-
+if __name__ == '__main__':
+    import sys
+    collectd = CollectdMock()
+    fetch_stats()
+else:
+    import collectd
+    collectd.register_config(configure_callback)
+    collectd.register_read(read_callback)
