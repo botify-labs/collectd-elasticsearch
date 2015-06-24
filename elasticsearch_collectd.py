@@ -549,16 +549,25 @@ def index_dig_it_up(obj, path, index_name):
 # purposes. They basically mock the calls on the "collectd" symbol
 # so everything prints to stdout.
 class CollectdMock(object):
+    def __init__(self, print_mode="debug"):
+        if print_mode == "debug":
+            self.value_mock = CollectdValuesDebugMock
+        elif print_mode == "graphite":
+            self.value_mock = CollectdValuesGraphiteMock
+        else:
+            raise NotImplementedError
+
+
     def error(self, msg):
         print 'ERROR: {}'.format(msg)
         sys.exit(1)
 
     def Values(self, plugin='elasticsearch'):
-        return CollectdValuesMock()
+        return (self.value_mock)()
 
 class CollectdValuesMock(object):
     def dispatch(self):
-        print self
+        raise NotImplementedError
 
     def __str__(self):
         attrs = []
@@ -567,9 +576,35 @@ class CollectdValuesMock(object):
                 attrs.append("{}={}".format(name, getattr(self, name)))
         return "<CollectdValues {}>".format(' '.join(attrs))
 
+class CollectdValuesDebugMock(CollectdValuesMock):
+    def dispatch(self):
+        print self
+
+class CollectdValuesGraphiteMock(CollectdValuesMock):
+    def dispatch(self):
+        inverse_hostname = '.'.join(
+            reversed(
+                socket.gethostname().split(".")
+            )
+        )
+        print "{}.elasticsearch-{}.{}-{} {} {}".format(
+            inverse_hostname,
+            self.plugin_instance,
+            self.type,
+            self.type_instance,
+            self.values[0],
+            datetime.datetime.now().strftime("%s")
+        )
+
 if __name__ == '__main__':
+    import argparse
+    import datetime
+    import socket
     import sys
-    collectd = CollectdMock()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--mode", type=str, default="debug")
+    args = parser.parse_args()
+    collectd = CollectdMock(print_mode=args.mode)
     fetch_stats()
 else:
     import collectd
